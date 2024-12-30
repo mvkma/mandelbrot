@@ -1,0 +1,134 @@
+/* Reset */
+* {
+    vertical-align: baseline;
+    font-weight: inherit;
+    font-family: inherit;
+    font-style: inherit;
+    font-size: 100%;
+    border: 0 none;
+    outline: 0;
+    padding: 0;
+    margin: 0;
+}
+
+:root {
+    --link-color: #44aaff;
+    --text-color: #e6e3e3;
+    --bg-color: #150f0e;
+    --src-bg-color: #1d1f21;
+    --src-fg-color: #c5c8c6;
+}
+
+#mobile-warning {
+    display: none;
+}
+
+@media (any-pointer: coarse) {
+    #mobile-warning {
+        display: flex;
+    }
+}
+
+body {
+    font-family: monospace;
+    line-height: 1.60;
+    letter-spacing: -0.01em;
+    text-rendering: optimizeLegibility;
+    font-size: 1.0rem;
+    margin: 0px auto;
+    padding: 0.5em 0.5em 0.5em 0.5em;
+    background: var(--bg-color);
+    color: var(--text-color);
+    width: 960px;
+}
+
+.text-right {
+    float: right;
+}
+
+.column-group-container {
+    display: flex;
+    width: 960px;
+}
+
+.column-group {
+    font-size: 0.9em;
+    margin: 0.5em;
+    padding: 0.3em 0.5em;
+    width: min-content;
+    border: 1px solid var(--src-fg-color);
+    flex: 1;
+}
+
+.column-group:first-child {
+    margin-left: 0em;
+}
+
+.column-group:last-child {
+    margin-right: 0em;
+}
+
+.row {
+    text-align: center;
+}
+
+.param-row > label {
+    display: inline-block;
+}
+
+.param-row > input, .param-row > select {
+    float: right;
+}
+
+input[type=""], select {
+    text-align: right;
+    width: 60px;
+    background: var(--src-bg-color);
+    color: var(--src-fg-color);
+}
+
+input[type=""]:focus {
+    border: 1px solid var(--text-color);
+}
+
+input[type="color"] {
+    width: 60px;
+    height: 1em;
+}
+
+button {
+    width: 100%;
+    padding: 0.1em;
+    margin: 0em;
+}
+
+a {
+    color: var(--link-color);
+}
+
+dl {
+    display: grid;
+    grid-template-columns: max-content auto;
+}
+
+dt {
+    grid-column-start: 1;
+}
+
+dd:before {
+    content: "-";
+    margin-right: 1em;
+}
+
+dd {
+    margin-left: 1em;
+    grid-column-start: 2;
+}
+
+strong {
+    font-weight: 800;
+}
+
+canvas {
+    touch-action: none;
+}

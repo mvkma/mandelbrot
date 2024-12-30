@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="assets/css/main.css"/>
+    <title>Mandelbrot</title>
+    <meta name="description" content="Mandelbrot" />
+  </head>
+  <body>
+    <div class="column-group-container" id="mobile-warning">
+      <div class="column-group">
+        <p><strong>Warning:</strong> It looks like you are on a mobile device. The simulation might not work.</p>
+      </div>
+    </div>
+    <div class="column-group-container">
+      <div class="column-group">
+        <span class="text-left">mandelbrot - press space to start</span>
+      </div>
+    </div>
+    <canvas id="canvas" width="960" height="600"></canvas>
+    <div class="column-group-container">
+      <div class="column-group" id="simulation-controls"></div>
+      <div class="column-group" id="view-controls"></div>
+    </div>
+    <script type="module" src="src/mandelbrot.js"></script>
+  </body>
+</html>
