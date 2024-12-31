@@ -97,7 +97,7 @@ let view = new ParameterGroup({
  */
 let params = new ParameterGroup({
     "iterations": { value: 15 },
-    "colormap": { value: "green" },
+    "colormap": { value: "twilight" },
 });
 
 async function init() {
@@ -119,7 +119,7 @@ async function init() {
     const emptyTexture = createTexture(gl, textureUnits["empty"], gl.canvas.width, gl.canvas.height, gl.RGBA16F, gl.RGBA, gl.FLOAT, gl.LINEAR, gl.REPEAT, null);
 
     const cmap = colormaps[params["colormap"]];
-    const cmapTexture = createTexture(gl, textureUnits["cmap"], cmap.length / 4, 1, gl.RGBA16F, gl.RGBA, gl.FLOAT, gl.LINEAR, gl.CLAMP_TO_EDGE, cmap);
+    const cmapTexture = createTexture(gl, textureUnits["cmap"], cmap.length / 3, 1, gl.RGB16F, gl.RGB, gl.FLOAT, gl.LINEAR, gl.CLAMP_TO_EDGE, cmap);
 
     frameBuffers = {
         ping: createFramebuffer(gl, pingTexture),
