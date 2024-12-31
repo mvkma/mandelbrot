@@ -21,6 +21,10 @@ import {
     translation,
 } from "./webglmath.js";
 
+import {
+    colormaps,
+} from "./colormaps.js";
+
 const PI = Math.PI;
 
 const FLOAT_SIZE = Float32Array.BYTES_PER_ELEMENT;
@@ -93,6 +97,7 @@ let view = new ParameterGroup({
  */
 let params = new ParameterGroup({
     "iterations": { value: 15 },
+    "colormap": { value: "green" },
 });
 
 async function init() {
@@ -113,14 +118,8 @@ async function init() {
     const pongTexture = createTexture(gl, textureUnits["pong"], gl.canvas.width, gl.canvas.height, gl.RGBA16F, gl.RGBA, gl.FLOAT, gl.LINEAR, gl.REPEAT, null);
     const emptyTexture = createTexture(gl, textureUnits["empty"], gl.canvas.width, gl.canvas.height, gl.RGBA16F, gl.RGBA, gl.FLOAT, gl.LINEAR, gl.REPEAT, null);
 
-    const cmap = new Float32Array(4 * 100);
-    for (let i = 0; i < cmap.length; i++) {
-        cmap[4 * i] = i / 100.0;
-        cmap[4 * i + 1] = (1.0 - Math.exp(-i / 100.0 * 2.0)) * 0.3;
-        cmap[4 * i + 2] = 0.2 + Math.atan(i / 100.0 - 0.5) / Math.PI * 0.2;
-        cmap[4 * i + 3] = 1.0;
-    }
-    const cmapTexture = createTexture(gl, textureUnits["cmap"], 100, 1, gl.RGBA16F, gl.RGBA, gl.FLOAT, gl.LINEAR, gl.CLAMP_TO_EDGE, cmap);
+    const cmap = colormaps[params["colormap"]];
+    const cmapTexture = createTexture(gl, textureUnits["cmap"], cmap.length / 4, 1, gl.RGBA16F, gl.RGBA, gl.FLOAT, gl.LINEAR, gl.CLAMP_TO_EDGE, cmap);
 
     frameBuffers = {
         ping: createFramebuffer(gl, pingTexture),
