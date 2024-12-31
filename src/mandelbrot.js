@@ -1,4 +1,5 @@
 import {
+    createControls,
     createFramebuffer,
     createProgram,
     createTexture,
@@ -96,9 +97,22 @@ let view = new ParameterGroup({
  * @type {ParameterGroup}
  */
 let params = new ParameterGroup({
-    "iterations": { value: 15 },
-    "colormap": { value: "twilight" },
+    "iterations": {
+        type: "",
+        value: 15,
+        attributes: { maxlength: 2, step: 1.0 },
+        transformation: (n) => parseInt(n),
+        inverseTransformation: (n) => n.toString().slice(0, 2),
+        name: "Iterations",
+    },
+    "colormap": {
+        type: "select",
+        value: "twilight",
+        attributes: { options: Object.keys(colormaps) },
+        name: "Colormap",
+    },
 });
+
 
 async function init() {
     gl = document.querySelector("canvas").getContext("webgl2");
@@ -118,9 +132,6 @@ async function init() {
     const pongTexture = createTexture(gl, textureUnits["pong"], gl.canvas.width, gl.canvas.height, gl.RGBA16F, gl.RGBA, gl.FLOAT, gl.LINEAR, gl.REPEAT, null);
     const emptyTexture = createTexture(gl, textureUnits["empty"], gl.canvas.width, gl.canvas.height, gl.RGBA16F, gl.RGBA, gl.FLOAT, gl.LINEAR, gl.REPEAT, null);
 
-    const cmap = colormaps[params["colormap"]];
-    const cmapTexture = createTexture(gl, textureUnits["cmap"], cmap.length / 3, 1, gl.RGB16F, gl.RGB, gl.FLOAT, gl.LINEAR, gl.CLAMP_TO_EDGE, cmap);
-
     frameBuffers = {
         ping: createFramebuffer(gl, pingTexture),
         pong: createFramebuffer(gl, pongTexture),
@@ -138,9 +149,19 @@ async function init() {
     gl.enableVertexAttribArray(attributeBindings["a_position"]);
     gl.vertexAttribPointer(attributeBindings["a_position"], 2, gl.FLOAT, false, 0, 0);
 
+    initColormap();
+}
+
+function initColormap() {
+    const cmap = colormaps[params["colormap"]];
+    const cmapTexture = createTexture(gl, textureUnits["cmap"], cmap.length / 3, 1, gl.RGB16F, gl.RGB, gl.FLOAT, gl.LINEAR, gl.CLAMP_TO_EDGE, cmap);
 }
 
 function render() {
+    if (params.changed) {
+        initColormap();
+    }
+
     gl.useProgram(programs.mandelbrot.prog);
     setUniforms(gl, programs.mandelbrot, {
         "u_input": textureUnits["empty"],
@@ -194,6 +215,8 @@ function render() {
 }
 
 window.onload = async function(ev) {
+    createControls("simulation-controls", params);
+
     await init();
     time = 0.0;
 
