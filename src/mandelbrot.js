@@ -90,7 +90,14 @@ let animate = false;
  * @type {ParameterGroup}
  */
 let view = new ParameterGroup({
-    "interval": { value: 60.0 },
+    "interval": {
+        type: "",
+        value: 60.0,
+        attributes: { maxlength: 5, step: 10 },
+        transformation: (n) => parseFloat(n),
+        inverseTransformation: (n) => n.toString().slice(0, 5),
+        name: "Interval (ms)",
+    },
 });
 
 /**
@@ -216,6 +223,7 @@ function render() {
 
 window.onload = async function(ev) {
     createControls("simulation-controls", params);
+    createControls("view-controls", view);
 
     await init();
     time = 0.0;
