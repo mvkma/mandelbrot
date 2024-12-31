@@ -98,6 +98,12 @@ let view = new ParameterGroup({
         inverseTransformation: (n) => n.toString().slice(0, 5),
         name: "Interval (ms)",
     },
+    "colormap": {
+        type: "select",
+        value: "twilight",
+        attributes: { options: Object.keys(colormaps) },
+        name: "Colormap",
+    },
 });
 
 /**
@@ -112,11 +118,37 @@ let params = new ParameterGroup({
         inverseTransformation: (n) => n.toString().slice(0, 2),
         name: "Iterations",
     },
-    "colormap": {
-        type: "select",
-        value: "twilight",
-        attributes: { options: Object.keys(colormaps) },
-        name: "Colormap",
+    "alpha": {
+        type: "",
+        value: -4.0,
+        attributes: { maxlength: 5, step: 0.1 },
+        transformation: (n) => parseFloat(n),
+        inverseTransformation: (n) => n.toString().slice(0, 5),
+        name: "Alpha",
+    },
+    "beta": {
+        type: "",
+        value: 2.0,
+        attributes: { maxlength: 5, step: 0.1 },
+        transformation: (n) => parseFloat(n),
+        inverseTransformation: (n) => n.toString().slice(0, 5),
+        name: "Beta",
+    },
+    "freq0": {
+        type: "",
+        value: 2.0,
+        attributes: { maxlength: 5, step: 0.1 },
+        transformation: (n) => parseFloat(n),
+        inverseTransformation: (n) => n.toString().slice(0, 5),
+        name: "Frequency 0",
+    },
+    "freq1": {
+        type: "",
+        value: 4.0,
+        attributes: { maxlength: 5, step: 0.1 },
+        transformation: (n) => parseFloat(n),
+        inverseTransformation: (n) => n.toString().slice(0, 5),
+        name: "Frequency 1",
     },
 });
 
@@ -160,12 +192,12 @@ async function init() {
 }
 
 function initColormap() {
-    const cmap = colormaps[params["colormap"]];
+    const cmap = colormaps[view["colormap"]];
     const cmapTexture = createTexture(gl, textureUnits["cmap"], cmap.length / 3, 1, gl.RGB16F, gl.RGB, gl.FLOAT, gl.LINEAR, gl.CLAMP_TO_EDGE, cmap);
 }
 
 function render() {
-    if (params.changed) {
+    if (view.changed) {
         initColormap();
     }
 
@@ -176,6 +208,10 @@ function render() {
         "u_iter": params["iterations"],
         "u_step": 0,
         "u_scale": [gl.canvas.width / gl.canvas.height, 1.0],
+        "u_alpha": params["alpha"],
+        "u_beta": params["beta"],
+        "u_freq0": params["freq0"],
+        "u_freq1": params["freq1"],
     });
     gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffers["ping"]);
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
@@ -187,10 +223,7 @@ function render() {
     for (let i = 0; i < params["iterations"]; i++) {
         setUniforms(gl, programs.mandelbrot, {
             "u_input": textureUnits[input],
-            "u_time": time,
-            "u_iter": params["iterations"],
             "u_step": i,
-            "u_scale": [gl.canvas.width / gl.canvas.height, 1.0],
         });
         gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffers[output]);
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
