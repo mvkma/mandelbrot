@@ -9,20 +9,6 @@ import {
 } from "./webglutils.js";
 
 import {
-    identity,
-    perspectiveProjection,
-    lookAt,
-    deg2rad,
-    rotateX,
-    rotationX,
-    rotateY,
-    rotationY,
-    rotateZ,
-    rotationZ,
-    translation,
-} from "./webglmath.js";
-
-import {
     colormaps,
 } from "./colormaps.js";
 
