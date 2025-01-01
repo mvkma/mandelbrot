@@ -59,6 +59,11 @@ let frameBuffers = undefined;
 /**
  * @type {Object}
  */
+let textures = undefined;
+
+/**
+ * @type {Object}
+ */
 let textureUnits = undefined;
 
 /**
@@ -112,6 +117,12 @@ let view = new ParameterGroup({
         attributes: { options: Object.keys(colormaps) },
         name: "Colormap",
     },
+    "expand": {
+        type: "select",
+        value: "false",
+        attributes: { options: ["true", "false"] },
+        name: "Expand",
+    }
 });
 
 /**
@@ -181,18 +192,6 @@ async function init() {
         colormap: createProgram(gl, sources["vsRect"], sources["fsColorMap"], attributeBindings),
     };
 
-    textureUnits = { ping: 2, pong: 3, empty: 4, cmap: 5 };
-
-    const pingTexture = createTexture(gl, textureUnits["ping"], gl.canvas.width, gl.canvas.height, gl.RGBA16F, gl.RGBA, gl.FLOAT, gl.LINEAR, gl.REPEAT, null);
-    const pongTexture = createTexture(gl, textureUnits["pong"], gl.canvas.width, gl.canvas.height, gl.RGBA16F, gl.RGBA, gl.FLOAT, gl.LINEAR, gl.REPEAT, null);
-    const emptyTexture = createTexture(gl, textureUnits["empty"], gl.canvas.width, gl.canvas.height, gl.RGBA16F, gl.RGBA, gl.FLOAT, gl.LINEAR, gl.REPEAT, null);
-
-    frameBuffers = {
-        ping: createFramebuffer(gl, pingTexture),
-        pong: createFramebuffer(gl, pongTexture),
-        canvas: null
-    };
-
     buffers = { quad: gl.createBuffer() };
 
     gl.bindBuffer(gl.ARRAY_BUFFER, buffers.quad);
@@ -204,16 +203,67 @@ async function init() {
     gl.enableVertexAttribArray(attributeBindings["a_position"]);
     gl.vertexAttribPointer(attributeBindings["a_position"], 2, gl.FLOAT, false, 0, 0);
 
+    initTextures();
     initColormap();
+}
+
+function cleanupTextures() {
+    for (const k of Object.keys(textures)) {
+        gl.deleteTexture(textures[k]);
+        textures[k] = undefined;
+    }
+
+    let fb;
+    for (const k of Object.keys(frameBuffers)) {
+        fb = frameBuffers[k];
+        if (fb === null) {
+            continue;
+        }
+        gl.deleteFramebuffer(fb);
+    }
+}
+
+function initTextures() {
+    textureUnits = { ping: 2, pong: 3, empty: 4, cmap: 5 };
+
+    textures = {
+        ping: createTexture(gl, textureUnits["ping"], gl.canvas.width, gl.canvas.height, gl.RGBA16F, gl.RGBA, gl.FLOAT, gl.LINEAR, gl.REPEAT, null),
+        pong: createTexture(gl, textureUnits["pong"], gl.canvas.width, gl.canvas.height, gl.RGBA16F, gl.RGBA, gl.FLOAT, gl.LINEAR, gl.REPEAT, null),
+        empty: createTexture(gl, textureUnits["empty"], gl.canvas.width, gl.canvas.height, gl.RGBA16F, gl.RGBA, gl.FLOAT, gl.LINEAR, gl.REPEAT, null),
+    };
+
+    frameBuffers = {
+        ping: createFramebuffer(gl, textures["ping"]),
+        pong: createFramebuffer(gl, textures["pong"]),
+        canvas: null
+    };
 }
 
 function initColormap() {
     const cmap = colormaps[view["colormap"]];
-    const cmapTexture = createTexture(gl, textureUnits["cmap"], cmap.length / 3, 1, gl.RGB16F, gl.RGB, gl.FLOAT, gl.LINEAR, gl.CLAMP_TO_EDGE, cmap);
+    textures["cmap"] = createTexture(gl, textureUnits["cmap"], cmap.length / 3, 1, gl.RGB16F, gl.RGB, gl.FLOAT, gl.LINEAR, gl.CLAMP_TO_EDGE, cmap);
 }
 
 function render() {
     if (view.changed) {
+        initColormap();
+        if (view["expand"] === "true") {
+            gl.canvas.classList.add("canvas-expand");
+        } else {
+            gl.canvas.classList.remove("canvas-expand");
+        }
+    }
+
+    if (gl.canvas.width !== gl.canvas.clientWidth ||
+        gl.canvas.height !== gl.canvas.clientHeight) {
+        cleanupTextures();
+
+        gl.canvas.width = gl.canvas.clientWidth;
+        gl.canvas.height = gl.canvas.clientHeight;
+        gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
+
+        console.log(gl.canvas.width, gl.canvas.height, gl.canvas.clientWidth, gl.canvas.clientHeight);
+        initTextures();
         initColormap();
     }
 
@@ -261,10 +311,6 @@ function render() {
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
     frame += 1;
-
-    if (frame % 120 == 0) {
-        console.log(`frame: ${frame}, time: ${time}`);
-    }
 
     if (animate) {
         time += 0.001;

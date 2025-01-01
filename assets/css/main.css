@@ -131,4 +131,13 @@ strong {
 
 canvas {
     touch-action: none;
+    width: 960px;
+    height: 600px;
+}
+
+.canvas-expand {
+    width: 90vw;
+    height: 80vh;
+    position: relative;
+    left: calc((100% - 90vw) / 2);
 }
