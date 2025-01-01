@@ -304,9 +304,47 @@ function render() {
     }
 }
 
+function getUrl() {
+    const settings = {
+        params: params,
+        view: view,
+    };
+
+    const url = new URL(window.location.href);
+    url.hash = "#" + btoa(JSON.stringify(settings));
+    console.log(url.href);
+}
+
+function loadSettingsFromUrl() {
+    const hash = new URL(window.location.href).hash;
+    let settings;
+
+    try {
+        settings = JSON.parse(atob(hash.slice(1)));
+    } catch (e) {
+        settings = {};
+    }
+
+    console.log(settings);
+
+    if (settings["params"] !== undefined) {
+        for (const k of Object.keys(settings["params"])) {
+            params.update(k, settings["params"][k]);
+        }
+    }
+
+    if (settings["view"] !== undefined) {
+        for (const k of Object.keys(settings["view"])) {
+            view.update(k, settings["view"][k]);
+        }
+    }
+}
+
 window.onload = async function(ev) {
     createControls("simulation-controls", params);
     createControls("view-controls", view);
+
+    loadSettingsFromUrl();
 
     await init();
     time = 0.0;
@@ -319,6 +357,9 @@ window.onload = async function(ev) {
                 window.requestAnimationFrame(() => render());
             }
             ev.preventDefault();
+            break;
+        case "s":
+            getUrl();
             break;
         default:
             break;
