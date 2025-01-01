@@ -98,6 +98,14 @@ let view = new ParameterGroup({
         inverseTransformation: (n) => n.toString().slice(0, 5),
         name: "Interval (ms)",
     },
+    "mix": {
+        type: "",
+        value: 1.0,
+        attributes: { maxlength: 5, step: 0.05 },
+        transformation: (n) => parseFloat(n),
+        inverseTransformation: (n) => n.toString().slice(0, 5),
+        name: "Mix",
+    },
     "colormap": {
         type: "select",
         value: "twilight",
@@ -149,6 +157,14 @@ let params = new ParameterGroup({
         transformation: (n) => parseFloat(n),
         inverseTransformation: (n) => n.toString().slice(0, 5),
         name: "Frequency 1",
+    },
+    "growth": {
+        type: "",
+        value: 1.1,
+        attributes: { maxlength: 5, step: 0.05 },
+        transformation: (n) => parseFloat(n),
+        inverseTransformation: (n) => n.toString().slice(0, 5),
+        name: "Growth",
     },
 });
 
@@ -212,6 +228,7 @@ function render() {
         "u_beta": params["beta"],
         "u_freq0": params["freq0"],
         "u_freq1": params["freq1"],
+        "u_growth": params["growth"],
     });
     gl.bindFramebuffer(gl.FRAMEBUFFER, frameBuffers["ping"]);
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
@@ -237,6 +254,7 @@ function render() {
     setUniforms(gl, programs.colormap, {
         "u_cmap": textureUnits["cmap"],
         "u_input": textureUnits[output],
+        "u_mix": view["mix"],
         // "u_time": time,
         "u_iter": params["iterations"],
     });
