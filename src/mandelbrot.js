@@ -248,7 +248,6 @@ function render() {
         gl.canvas.height = gl.canvas.clientHeight;
         gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
 
-        console.log(gl.canvas.width, gl.canvas.height, gl.canvas.clientWidth, gl.canvas.clientHeight);
         initTextures();
         initColormap();
     }
@@ -308,6 +307,7 @@ function getUrl() {
     const settings = {
         params: params,
         view: view,
+        time: time,
     };
 
     const url = new URL(window.location.href);
@@ -322,10 +322,8 @@ function loadSettingsFromUrl() {
     try {
         settings = JSON.parse(atob(hash.slice(1)));
     } catch (e) {
-        settings = {};
+        return;
     }
-
-    console.log(settings);
 
     if (settings["params"] !== undefined) {
         for (const k of Object.keys(settings["params"])) {
@@ -338,6 +336,16 @@ function loadSettingsFromUrl() {
             view.update(k, settings["view"][k]);
         }
     }
+
+    if (settings["time"] !== undefined) {
+        time = settings["time"];
+    }
+
+    time = 0.0;
+}
+
+window.onhashchange = function(ev) {
+    loadSettingsFromUrl();
 }
 
 window.onload = async function(ev) {
@@ -364,6 +372,16 @@ window.onload = async function(ev) {
         default:
             break;
         }
+    });
+
+    const canvas = document.querySelector("canvas");
+
+    canvas.addEventListener("pointerup", function (ev) {
+        animate = !animate;
+        if (animate) {
+            window.requestAnimationFrame(() => render());
+        }
+        ev.preventDefault();
     });
 
     window.requestAnimationFrame(() => render());

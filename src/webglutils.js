@@ -186,8 +186,10 @@ const ParameterGroup = class {
         this.changed = false;
     }
 
+    /**
+     * Called by JSON.stringify
+     */
     toJSON(key) {
-        console.log("toJSON");
         return Object.fromEntries(Object.keys(this.specs).map(k => [k, this[k]]));
     }
 
