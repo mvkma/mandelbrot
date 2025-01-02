@@ -136,8 +136,8 @@ canvas {
 }
 
 .canvas-expand {
-    width: 90vw;
+    width: max(90vw, 960px);
     height: 80vh;
     position: relative;
-    left: calc((100% - 90vw) / 2);
+    left: min(calc((100% - 90vw) / 2), 0px);
 }

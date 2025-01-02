@@ -89,6 +89,14 @@ let view = new ParameterGroup({
         inverseTransformation: (n) => n.toString().slice(0, 5),
         name: "Interval (ms)",
     },
+    "dt": {
+        type: "",
+        value: 0.001,
+        attributes: { maxlength: 10, step: 0.001 },
+        transformation: (n) => parseFloat(n),
+        inverseTransformation: (n) => n.toString().slice(0, 10),
+        name: "Time step",
+    },
     "mix": {
         type: "",
         value: 1.0,
@@ -298,7 +306,7 @@ function render() {
     frame += 1;
 
     if (animate) {
-        time += 0.001;
+        time += view["dt"];
         window.setTimeout(() => window.requestAnimationFrame(() => render()), view["interval"]);
     }
 }
@@ -346,6 +354,8 @@ function loadSettingsFromUrl() {
 
 window.onhashchange = function(ev) {
     loadSettingsFromUrl();
+
+    window.requestAnimationFrame(() => render());
 }
 
 window.onload = async function(ev) {
