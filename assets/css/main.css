@@ -1,0 +1,37 @@
+/* Reset */
+* {
+    vertical-align: baseline;
+    font-weight: inherit;
+    font-family: inherit;
+    font-style: inherit;
+    font-size: 100%;
+    border: 0 none;
+    outline: 0;
+    padding: 0;
+    margin: 0;
+}
+
+:root {
+    --link-color: #44aaff;
+    --text-color: #e6e3e3;
+    --bg-color: #150f0e;
+    --src-bg-color: #1d1f21;
+    --src-fg-color: #c5c8c6;
+}
+
+body {
+    font-family: monospace;
+    line-height: 1.60;
+    letter-spacing: -0.01em;
+    text-rendering: optimizeLegibility;
+    font-size: 1.0rem;
+    margin: 0px auto;
+    padding: 0.5em 0.5em 0.5em 0.5em;
+    background: var(--bg-color);
+    color: var(--text-color);
+    width: 800px;
+}
+
+a {
+    color: var(--link-color);
+}
