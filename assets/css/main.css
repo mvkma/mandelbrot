@@ -39,7 +39,7 @@ body {
     padding: 0.5em 0.5em 0.5em 0.5em;
     background: var(--bg-color);
     color: var(--text-color);
-    width: 960px;
+    width: 800px;
 }
 
 .text-right {
@@ -48,7 +48,7 @@ body {
 
 .column-group-container {
     display: flex;
-    width: 960px;
+    width: 800px;
 }
 
 .column-group {
@@ -79,6 +79,15 @@ body {
 .param-row > input, .param-row > select {
     float: right;
 }
+
+.button-row {
+    display: flex;
+}
+
+.button-row > button {
+    margin: 0em 0.2em;
+}
+
 
 input[type=""], select {
     text-align: right;
@@ -131,12 +140,12 @@ strong {
 
 canvas {
     touch-action: none;
-    width: 960px;
+    width: 800px;
     height: 600px;
 }
 
 .canvas-expand {
-    width: max(90vw, 960px);
+    width: max(90vw, 800px);
     height: 80vh;
     position: relative;
     left: min(calc((100% - 90vw) / 2), 0px);

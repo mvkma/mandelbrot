@@ -70,7 +70,7 @@ let frame = 0;
 /**
  * @type {boolean}
  */
-let paused = true;
+let expand = false;
 
 /**
  * @type {boolean}
@@ -111,12 +111,6 @@ let view = new ParameterGroup({
         attributes: { options: Object.keys(colormaps) },
         name: "Colormap",
     },
-    "expand": {
-        type: "select",
-        value: "false",
-        attributes: { options: ["true", "false"] },
-        name: "Expand",
-    }
 });
 
 /**
@@ -241,11 +235,6 @@ function initColormap() {
 function render() {
     if (view.changed) {
         initColormap();
-        if (view["expand"] === "true") {
-            gl.canvas.classList.add("canvas-expand");
-        } else {
-            gl.canvas.classList.remove("canvas-expand");
-        }
     }
 
     if (gl.canvas.width !== gl.canvas.clientWidth ||
@@ -315,12 +304,12 @@ function getUrl() {
     const settings = {
         params: params,
         view: view,
-        time: time,
+        // time: time,
     };
 
     const url = new URL(window.location.href);
     url.hash = "#" + btoa(JSON.stringify(settings));
-    console.log(url.href);
+    window.location.replace(url);
 }
 
 function loadSettingsFromUrl() {
@@ -332,6 +321,8 @@ function loadSettingsFromUrl() {
     } catch (e) {
         return;
     }
+
+    console.log('load: ', settings);
 
     if (settings["params"] !== undefined) {
         for (const k of Object.keys(settings["params"])) {
@@ -349,13 +340,54 @@ function loadSettingsFromUrl() {
         time = settings["time"];
     }
 
-    time = 0.0;
+    // time = 0.0;
+}
+
+function togglePlay() {
+    animate = !animate;
+    if (animate) {
+        window.requestAnimationFrame(() => render());
+    }
+    document.querySelector("#button-start").textContent = animate ? "pause" : "play";
+}
+
+function toggleExpand() {
+    expand = !expand;
+
+    if (expand) {
+        gl.canvas.classList.add("canvas-expand");
+    } else {
+        gl.canvas.classList.remove("canvas-expand");
+    }
+
+    document.querySelector("#button-expand").textContent = expand ? "shrink" : "expand";
+}
+
+function screenshot() {
+    const a = document.createElement("a");
+    document.body.appendChild(a);
+    a.style.display = "none";
+
+    const filename = `waves-${(new Date()).toISOString()}.png`;
+    const paused = !animate;
+
+    animate = false;
+    render();
+    gl.canvas.toBlob(function (blob) {
+        a.href = window.URL.createObjectURL(blob);
+        a.download = filename;
+        a.click();
+    });
+    animate = !paused;
+    document.body.removeChild(a);
 }
 
 window.onhashchange = function(ev) {
     loadSettingsFromUrl();
 
-    window.requestAnimationFrame(() => render());
+    if (!animate) {
+        window.requestAnimationFrame(() => render());
+    }
 }
 
 window.onload = async function(ev) {
@@ -370,10 +402,7 @@ window.onload = async function(ev) {
     window.addEventListener("keydown", function (ev) {
         switch (ev.key) {
         case " ":
-            animate = !animate;
-            if (animate) {
-                window.requestAnimationFrame(() => render());
-            }
+            togglePlay();
             ev.preventDefault();
             break;
         case "s":
@@ -387,12 +416,26 @@ window.onload = async function(ev) {
     const canvas = document.querySelector("canvas");
 
     canvas.addEventListener("pointerup", function (ev) {
-        animate = !animate;
-        if (animate) {
-            window.requestAnimationFrame(() => render());
-        }
+        togglePlay();
         ev.preventDefault();
     });
 
+    document.querySelector("#button-start").addEventListener("click", function (ev) {
+        togglePlay();
+    });
+
+    document.querySelector("#button-expand").addEventListener("click", function (ev) {
+        toggleExpand();
+    });
+
+    document.querySelector("#button-share").addEventListener("click", function (ev) {
+        getUrl();
+    });
+
+    document.querySelector("#button-screenshot").addEventListener("click", function (ev) {
+        screenshot();
+    });
+
+    toggleExpand();
     window.requestAnimationFrame(() => render());
 }
