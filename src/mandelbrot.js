@@ -17,9 +17,9 @@ const PI = Math.PI;
 const FLOAT_SIZE = Float32Array.BYTES_PER_ELEMENT;
 
 const SHADER_SOURCES = {
-    vsRect: "src/vs-rect.glsl",
-    fsQuadraticMap: "src/fs-quadratic-map.glsl",
-    fsColorMap: "src/fs-color-map.glsl",
+    vsRect: "assets/glsl/vs-rect.glsl",
+    fsQuadraticMap: "assets/glsl/fs-quadratic-map.glsl",
+    fsColorMap: "assets/glsl/fs-color-map.glsl",
 };
 
 /**
