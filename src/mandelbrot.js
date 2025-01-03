@@ -368,7 +368,7 @@ function screenshot() {
     document.body.appendChild(a);
     a.style.display = "none";
 
-    const filename = `waves-${(new Date()).toISOString()}.png`;
+    const filename = `mandelbrot-${(new Date()).toISOString()}.png`;
     const paused = !animate;
 
     animate = false;
@@ -404,9 +404,6 @@ window.onload = async function(ev) {
         case " ":
             togglePlay();
             ev.preventDefault();
-            break;
-        case "s":
-            getUrl();
             break;
         default:
             break;

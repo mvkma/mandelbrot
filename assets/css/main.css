@@ -19,16 +19,6 @@
     --src-fg-color: #c5c8c6;
 }
 
-#mobile-warning {
-    display: none;
-}
-
-@media (any-pointer: coarse) {
-    #mobile-warning {
-        display: flex;
-    }
-}
-
 body {
     font-family: monospace;
     line-height: 1.60;
