@@ -1,3 +1,15 @@
+/*
+#eyJwYXJhbXMiOnsiaXRlcmF0aW9ucyI6MzEsImFscGhhIjotMC4xLCJiZXRhIjoxLCJmcmVxMCI6MCwiZnJlcTEiOjAsImdyb3d0aCI6MS4wOX0sInZpZXciOnsiaW50ZXJ2YWwiOjkwLCJkdCI6MC4wMDEsIm1peCI6MS4wNDYsImNvbG9ybWFwIjoicmVkIn19
+
+#eyJwYXJhbXMiOnsiaXRlcmF0aW9ucyI6MTUsImFscGhhIjotNCwiYmV0YSI6MiwiZnJlcTAiOjIsImZyZXExIjo0LCJncm93dGgiOjEuMTV9LCJ2aWV3Ijp7ImludGVydmFsIjo2MCwiZHQiOjAuMDAxLCJtaXgiOjAuOTUsImNvbG9ybWFwIjoidHdpbGlnaHQifX0=
+
+#eyJwYXJhbXMiOnsiaXRlcmF0aW9ucyI6MTcsImFscGhhIjotMC44NSwiYmV0YSI6MC43LCJmcmVxMCI6MiwiZnJlcTEiOjMuMiwiZ3Jvd3RoIjowLjk1fSwidmlldyI6eyJpbnRlcnZhbCI6NjAsImR0IjowLjAwMSwibWl4IjowLjAxLCJjb2xvcm1hcCI6ImdyZWVuIn19
+
+#eyJwYXJhbXMiOnsiaXRlcmF0aW9ucyI6MTEsImFscGhhIjotMC44OCwiYmV0YSI6Mi40OTUsImZyZXEwIjowLCJmcmVxMSI6LTIsImdyb3d0aCI6MC45OTh9LCJ2aWV3Ijp7ImludGVydmFsIjo2MCwibWl4IjoxLCJjb2xvcm1hcCI6ImNpdmlkaXMifX0=
+
+eyJwYXJhbXMiOnsiaXRlcmF0aW9ucyI6NTAsImFscGhhIjotMC40OCwiYmV0YSI6MS4wMDksImZyZXEwIjowLCJmcmVxMSI6MCwiZ3Jvd3RoIjoxfSwidmlldyI6eyJpbnRlcnZhbCI6MTIwLCJkdCI6MC4wMDEsIm1peCI6MC4wNSwiY29sb3JtYXAiOiJpbmZlcm5vIn19
+ */
+
 import {
     createControls,
     createFramebuffer,
@@ -216,7 +228,7 @@ function cleanupTextures() {
 function initTextures() {
     textureUnits = { ping: 2, pong: 3, zero: 4, cmap: 5 };
 
-    const internalFormat = gl.RGBA32F;
+    const internalFormat = gl.RGBA16F;
     const format = gl.RGBA;
     const type = gl.FLOAT;
     const filter = gl.NEAREST;
@@ -241,7 +253,7 @@ function initColormap() {
     const format = gl.RGB;
     const type = gl.FLOAT;
     const filter = gl.LINEAR;
-    const clamp = gl.CLAMP_TO_EDGE;
+    const clamp = gl.REPEAT;
 
     textures["cmap"] = createTexture(gl, textureUnits["cmap"], cmap.length / 3, 1, internalFormat, format, type, filter, clamp, cmap);
 }

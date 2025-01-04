@@ -41,16 +41,14 @@ void main() {
   p = data.z;
   n = data.w;
 
-  if (length(pow(abs(z), vec2(u_step / u_iter + u_alpha))) > u_beta) {
+  if (length(pow(abs(z), vec2(u_alpha))) > u_beta && n >= u_step - 1.0) {
     n = n + 1.0;
   }
 
   p += 1.0 / u_iter / 2.0 * PI;
   p += 2.0 * u_time * PI;
-  c = mul_complex(
-                  u_scale * 1.0 * v_texcoord * (0.5 * sin(u_freq0 * u_time * PI) + 1.0),
-                  phase_vec(p)
-                  ) * pow(u_growth, u_step);
+  c = u_scale * v_texcoord * (sin(u_freq0 * u_time * PI) + 1.0);
+  c = mul_complex(c, phase_vec(p)) * pow(u_growth, u_step);
   c = mul_complex(c, phase_vec(-sin(u_time * PI) * u_freq1 * PI));
   fragColor = vec4(mul_complex(z, z) + c, mod(p, 2.0 * PI), n);
 }
