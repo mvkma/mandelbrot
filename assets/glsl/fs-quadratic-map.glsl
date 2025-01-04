@@ -2,6 +2,7 @@
 #define PI 3.1415926538
 
 precision highp float;
+//precision highp sampler2D;
 
 uniform sampler2D u_input;
 uniform float u_time;
@@ -40,7 +41,7 @@ void main() {
   p = data.z;
   n = data.w;
 
-  if (length(pow(z, vec2(u_step / u_iter + u_alpha))) > u_beta) {
+  if (length(pow(abs(z), vec2(u_step / u_iter + u_alpha))) > u_beta) {
     n = n + 1.0;
   }
 

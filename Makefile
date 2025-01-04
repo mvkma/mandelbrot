@@ -1,12 +1,19 @@
 BUILDDIR = public
 INDEX = index.html
-SRCS = src assets
+SRC = src
+ASSETS = assets
+SRCS = $(SRC) $(ASSETS)
 
 $(BUILDDIR):
 	mkdir -p $@
 
 clean:
 	rm -rf $(BUILDDIR)
+
+web: $(SRCS)
+	cp $(SRC)/*.js ~/web/assets/js
+	cp $(ASSETS)/css/mandelbrot.css ~/web/assets/css/mandelbrot.css
+	cp -r $(ASSETS)/glsl ~/web/assets
 
 release: $(BUILDDIR) $(SRCS)
 	cp -f $(INDEX) $(BUILDDIR)
