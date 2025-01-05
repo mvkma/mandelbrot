@@ -222,11 +222,22 @@ const ParameterGroup = class {
 
     /**
      * Reset values and callbacks back to what they were when the group was initialized.
+     *
+     * @param {boolean} resetCallbacks
+     * @param {boolean} runCallbacks
      */
-    reset() {
+    reset(resetCallbacks = true, runCallbacks = false) {
         for (const [k, v] of Object.entries(this.defaults)) {
             this[k] = v;
-            this.callbacks[k] = [];
+            if (resetCallbacks) {
+                this.callbacks[k] = [];
+            }
+
+            if (runCallbacks) {
+                for (const fn of this.callbacks[k]) {
+                    fn(v);
+                }
+            }
         }
     }
 }

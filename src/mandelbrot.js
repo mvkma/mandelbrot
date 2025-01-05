@@ -189,7 +189,6 @@ let params = new ParameterGroup({
 
 async function init() {
     gl = document.querySelector("canvas").getContext("webgl2");
-    console.log(gl);
     gl.getExtension("EXT_color_buffer_float");
     gl.getExtension("OES_texture_float_linear");
 
@@ -357,7 +356,7 @@ function loadSettingsFromUrl() {
         return;
     }
 
-    console.log('load: ', settings);
+    // console.log('load: ', settings);
 
     if (settings["params"] !== undefined) {
         for (const k of Object.keys(settings["params"])) {
@@ -469,14 +468,14 @@ window.onload = async function(ev) {
     });
 
     document.querySelector("#button-reset").addEventListener("click", function (ev) {
-        view.reset();
-        params.reset();
+        view.reset(false, true);
+        params.reset(false, true);
         time = 0.0;
         const url = new URL(window.location.href);
         url.hash = "#";
         window.location.replace(url);
     });
 
-    toggleExpand();
+    // toggleExpand();
     window.requestAnimationFrame(() => render());
 }
