@@ -47,7 +47,7 @@ void main() {
 
   p += 1.0 / u_iter / 2.0 * PI;
   p += 2.0 * u_time * PI;
-  c = u_scale * v_texcoord * (sin(u_freq0 * u_time * PI) + 1.0);
+  c = u_scale * v_texcoord * (0.5 * sin(u_freq0 * u_time * PI) + 1.0);
   c = mul_complex(c, phase_vec(p)) * pow(u_growth, u_step);
   c = mul_complex(c, phase_vec(-sin(u_time * PI) * u_freq1 * PI));
   fragColor = vec4(mul_complex(z, z) + c, mod(p, 2.0 * PI), n);
