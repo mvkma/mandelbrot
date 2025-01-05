@@ -1,13 +1,4 @@
 /*
-#eyJwYXJhbXMiOnsiaXRlcmF0aW9ucyI6MzEsImFscGhhIjotMC4xLCJiZXRhIjoxLCJmcmVxMCI6MCwiZnJlcTEiOjAsImdyb3d0aCI6MS4wOX0sInZpZXciOnsiaW50ZXJ2YWwiOjkwLCJkdCI6MC4wMDEsIm1peCI6MS4wNDYsImNvbG9ybWFwIjoicmVkIn19
-
-#eyJwYXJhbXMiOnsiaXRlcmF0aW9ucyI6MTUsImFscGhhIjotNCwiYmV0YSI6MiwiZnJlcTAiOjIsImZyZXExIjo0LCJncm93dGgiOjEuMTV9LCJ2aWV3Ijp7ImludGVydmFsIjo2MCwiZHQiOjAuMDAxLCJtaXgiOjAuOTUsImNvbG9ybWFwIjoidHdpbGlnaHQifX0=
-
-#eyJwYXJhbXMiOnsiaXRlcmF0aW9ucyI6MTcsImFscGhhIjotMC44NSwiYmV0YSI6MC43LCJmcmVxMCI6MiwiZnJlcTEiOjMuMiwiZ3Jvd3RoIjowLjk1fSwidmlldyI6eyJpbnRlcnZhbCI6NjAsImR0IjowLjAwMSwibWl4IjowLjAxLCJjb2xvcm1hcCI6ImdyZWVuIn19
-
-#eyJwYXJhbXMiOnsiaXRlcmF0aW9ucyI6MTEsImFscGhhIjotMC44OCwiYmV0YSI6Mi40OTUsImZyZXEwIjowLCJmcmVxMSI6LTIsImdyb3d0aCI6MC45OTh9LCJ2aWV3Ijp7ImludGVydmFsIjo2MCwibWl4IjoxLCJjb2xvcm1hcCI6ImNpdmlkaXMifX0=
-
-eyJwYXJhbXMiOnsiaXRlcmF0aW9ucyI6NTAsImFscGhhIjotMC40OCwiYmV0YSI6MS4wMDksImZyZXEwIjowLCJmcmVxMSI6MCwiZ3Jvd3RoIjoxfSwidmlldyI6eyJpbnRlcnZhbCI6MTIwLCJkdCI6MC4wMDEsIm1peCI6MC4wNSwiY29sb3JtYXAiOiJpbmZlcm5vIn19
  */
 
 import {
@@ -115,7 +106,23 @@ let view = new ParameterGroup({
         attributes: { maxlength: 5, step: 0.05 },
         transformation: (n) => parseFloat(n),
         inverseTransformation: (n) => n.toString().slice(0, 5),
-        name: "Mix",
+        name: "Colormap mix",
+    },
+    "rmix": {
+        type: "",
+        value: 0.0,
+        attributes: { maxlength: 5, step: 0.05 },
+        transformation: (n) => parseFloat(n),
+        inverseTransformation: (n) => n.toString().slice(0, 5),
+        name: "Mirror mix",
+    },
+    "rscale": {
+        type: "",
+        value: 2.5,
+        attributes: { maxlength: 5, step: 0.05 },
+        transformation: (n) => parseFloat(n),
+        inverseTransformation: (n) => n.toString().slice(0, 5),
+        name: "Mirror scale",
     },
     "colormap": {
         type: "select",
@@ -232,7 +239,7 @@ function initTextures() {
     const format = gl.RGBA;
     const type = gl.FLOAT;
     const filter = gl.NEAREST;
-    const clamp = gl.CLAMP_TO_EDGE;
+    const clamp = gl.MIRRORED_REPEAT;
 
     textures = {
         ping: createTexture(gl, textureUnits["ping"], gl.canvas.width, gl.canvas.height, internalFormat, format, type, filter, clamp, null),
@@ -313,6 +320,8 @@ function render() {
         "u_cmap": textureUnits["cmap"],
         "u_input": textureUnits[output],
         "u_mix": view["mix"],
+        "u_rmix": view["rmix"],
+        "u_rscale": view["rscale"],
         // "u_time": time,
         "u_iter": params["iterations"],
     });
@@ -457,6 +466,15 @@ window.onload = async function(ev) {
 
     document.querySelector("#button-screenshot").addEventListener("click", function (ev) {
         screenshot();
+    });
+
+    document.querySelector("#button-reset").addEventListener("click", function (ev) {
+        view.reset();
+        params.reset();
+        time = 0.0;
+        const url = new URL(window.location.href);
+        url.hash = "#";
+        window.location.replace(url);
     });
 
     toggleExpand();
